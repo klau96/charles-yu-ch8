@@ -29,10 +29,10 @@ export const scenes: Record<string, Scene> = {
       { text: "The woman does not notice your presence. Her face is covered in tears that have long been dried around her strained red eyes." },
       
       { text: "Her hands embrace her grandmother's hands, but without physical contact, her warmth is left unreciprocated.", 
+        
+        // FIX: If adding a lines array inside a choice, it will show choices from the ending choices array
         choices: [
-          { label: "You're not supposed to be here.", lines: [
-            {speaker: "woman", text: "..."},
-          ]},
+          { label: "You're not supposed to be here."},
           { label: "(Say nothing)" },
         ],
         
