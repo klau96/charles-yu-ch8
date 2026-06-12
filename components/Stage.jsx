@@ -82,16 +82,8 @@ export function Stage() {
         )}
 
         {/* z-10 — character sprite, driven by the active line. `key` remounts the
-            img on a sprite change so the opacity transition re-fires as a fade. */}
-        {sprite && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            key={sprite}
-            src={sprite}
-            alt=""
-            className="absolute bottom-0 left-1/2 z-10 h-[85%] -translate-x-1/2 object-contain transition-opacity duration-500"
-          />
-        )}
+            sprite on a change so it fades in from scratch (see CharacterSprite). */}
+        {sprite && <CharacterSprite key={sprite} src={sprite} />}
 
         {/* z-20 — interaction layer, chosen by node.type inside SceneRenderer */}
         <div className="absolute inset-0 z-20">
@@ -112,5 +104,27 @@ export function Stage() {
         )}
       </div>
     </main>
+  );
+}
+
+// The character sprite, faded in once its pixels are ready. It starts at
+// opacity-0 and transitions to full on load — so even a not-yet-cached sprite
+// never pops in half-painted. The ref's `complete` check covers the case where
+// a preloaded sprite is already cached before React's onLoad can attach.
+function CharacterSprite({ src }) {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      ref={(el) => {
+        if (el?.complete) setLoaded(true);
+      }}
+      src={src}
+      alt=""
+      onLoad={() => setLoaded(true)}
+      className={`absolute bottom-0 left-1/2 z-10 h-[85%] -translate-x-1/2 object-contain transition-opacity duration-500 ${
+        loaded ? "opacity-100" : "opacity-0"
+      }`}
+    />
   );
 }

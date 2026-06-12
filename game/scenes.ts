@@ -34,10 +34,11 @@ export const scenes: Record<string, Scene> = {
             {speaker: "woman", text: "..."},
           ]},
           { label: "(Say nothing)" },
-        ] 
+        ],
+        
       },
-
-      { speaker: "woman", text: "You're not supposed to be able to see me.", sprite: "/mari/mari_slightfrown.png" },
+      
+      { speaker: "woman", text: "Who are you?", sprite: "/mari/mari_slightfrown.png",}
     ],
     // After an in-scene choice's lines play out, the scene advances via this.
     next: "ending_collapse",
@@ -50,6 +51,7 @@ export const scenes: Record<string, Scene> = {
           { speaker: "narration", text: "You say nothing. The room holds its breath with her.", sprite: "/mari/mari_neutral.png" },
           { speaker: "woman", text: "...Most people would have left by now.", sprite: "/mari/mari_off.png" },
         ],
+        next: "ending_collapse",
       },
       // CLASSIC choice: jumps straight to another node.
       { label: "\"She can't see you, can she?\"", next: "ending_collapse", set: { broachedGrief: true } },

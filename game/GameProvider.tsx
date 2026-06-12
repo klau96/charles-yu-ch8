@@ -11,6 +11,7 @@ import {
 } from "react";
 import { gameReducer, initialState } from "./gameReducer";
 import { loadGame, saveGame } from "./save";
+import { collectSprites, preloadImages } from "./assets";
 import type { GameState, Action } from "@/lib/types";
 
 interface GameContextValue {
@@ -39,6 +40,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const saved = loadGame();
     if (saved) dispatch({ type: "LOAD", state: saved });
     setHydrated(true);
+  }, []);
+
+  // Warm the browser's image cache once on mount so sprite swaps don't flash.
+  // The set is small, so we preload everything; switch to per-scene lookahead
+  // if the sprite count ever grows large.
+  useEffect(() => {
+    preloadImages(collectSprites());
   }, []);
 
   // Autosave on every state change — but NOT before hydration. Without this
