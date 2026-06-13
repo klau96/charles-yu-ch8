@@ -55,7 +55,7 @@ const SECTIONS: Section[] = [
   },
 ];
 
-export function Navbar() {
+export function About() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
