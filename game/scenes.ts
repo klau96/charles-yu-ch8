@@ -130,7 +130,7 @@ export const scenes: Record<string, Scene> = {
       { speaker: "narration", 
         dimmed: true, 
         text: "The young woman turns back to her grandmother, who is slowly closes her eyes. A look of something unresolved twists across her face. A flicker of disappointment, and exhaust,"},
-      { text: "And then she takes her last breath, alone, the pot of stew untouched in the next room."},
+      { text: "And then the grandmother takes her last breath, alone, the pot of stew untouched in the next room."},
       { text: "."},
       { text: ". ."},
       { text: ". . ."},
@@ -144,7 +144,7 @@ export const scenes: Record<string, Scene> = {
         text: "\"Thanks for that,\" she says.",
         choices: [{label: "\"Yeah, take all the time you want. Well, not all the time.\""},]
       },
-      { speaker: "woman", 
+      { speaker: "woman", sprite: "/mari/mari_neutral.png",
         text: "\"I suppose I can't stay here.\"",
         choices: [{label: "(Shake your head)"},]
       },
@@ -154,16 +154,25 @@ export const scenes: Record<string, Scene> = {
       { speaker: "woman",
         text: "\"Maybe that's what I want.\"",
         choices: [
-          {label: "\"Trust me. It’s not. That’s not home.\""},
+          {label: "\"Trust me. It’s not. That’s not home.\"", lines: [
+            { speaker: "narration", text:"",
+              choices: [{label: "\"I know it seems like home, everything looks the same, but it’s not. You weren’t there. It will never be the case that you were.\"", 
+                lines: [
+                  { speaker: "woman", sprite: "/mari/mari_neutral.png",
+                    text: "The woman still seems conflicted with herself. As with many clients that have gotten lost in time.",
+                  },
+                ]
+              }],
+            },
+          ]},
           {label: "..."},
         ]
-      },
-      { speaker: "narration", text:"",
-        choices: [{label: "\"I know it seems like home, everything looks the same, but it’s not. You weren’t there. It will never be the case that you were.\""}],
       },
       { speaker: "woman", sprite: "/mari/mari_slightfrown.png",
         text: "...",
       },
+      
+      
       
       // BRANCH 1: ENDING DIALOGUE -> Cuts to choices array
     ],
@@ -190,7 +199,7 @@ export const scenes: Record<string, Scene> = {
       { speaker: "narration", text: "Day in the life of a time traveling technician living in the TM-31.",},
       { text: "A typical customer gets into a machine that can literally take her whenever she’d like to go. Do you want to know what the first stop usually is? Take a guess.",},
       { text: "Don’t guess. You already know: the unhappiest day of her life—",},
-      { fx: "shake", text: "—The world shakes, and a loud tear ripples across the world.",},
+      { fx: "shake", text: "—The world shakes, and a loud tear ripples across the temporal reality.",},
       { text: ". . .",},
       { text: "That does not sound regular.",},
       { fx: "redblink", text: "The TM-31 sounds the alarm. Code Red. TAMMY begins panicking, so I place her back into the charging dock.",},
@@ -249,7 +258,7 @@ export const scenes: Record<string, Scene> = {
       },
       { text: "In fact, all movement in this temporal dimension has ceased. The timeline has lost its clutch on entropy, ceasing the energy of nearby occupants. But they don't know this yet. By the looks of it, they'll never know.",},
       { fx: "shake",
-        text: "For the first time as a time travel technician, I can sense the amount of time in this moment decreasing. I rush up the stairs to the apartment.",},
+        text: "It's a situation that doesn't happen often. I can sense the amount of time in this moment decreasing rapidly. I rush up the stairs to the apartment.",},
 
       { speaker: "narration", 
         background: "living-room.jpeg",

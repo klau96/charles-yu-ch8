@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
-// A second colophon-style dropdown — same visual language as Navbar ("About"),
+// A second colophon-style dropdown — same visual language as the About menu,
 // but holding contact links. Edit SECTIONS below to change the contents.
 interface Section {
   label: string;
