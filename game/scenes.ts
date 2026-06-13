@@ -24,8 +24,10 @@ export const scenes: Record<string, Scene> = {
     type: "choice",
     background: "living-room.jpeg",
     character: { sprite: "/mari/mari_behindshadow.png", name: "The Woman" },
-    script: [
+    script: [ 
       // No `sprite` here — falls back to the scene's character.sprite (behindshadow).
+      
+      // -------- APARTMENT — PART 1 -----------------------------------------
       { speaker: "narration", text: "A woman a little younger than I am, maybe twenty-five, twenty six. She's kneeling over an older woman who lies still, in an awkward position, her limbs slumped over the couch." },
       { text: "The older woman looks up at the ceiling, looking through it, filled with a clear-eyed awareness of what's happening." },
       // This line swaps the sprite as it's shown.
@@ -40,7 +42,7 @@ export const scenes: Record<string, Scene> = {
             { speaker: "narration",
               text: "She doesn't turn around or look in my direction.",
               choices: [
-                {label: "You can't actually see her. This didn't really happen. You weren't there when she died. "}
+                {label: "\"You can't actually see her. This didn't really happen. You weren't there when she died.\""}
               ]},
               { speaker: "narration", text: "The younger woman glares at me, angry for a moment.", sprite: "/mari/mari_angry.png",},
           ]
@@ -56,27 +58,46 @@ export const scenes: Record<string, Scene> = {
 
       {text: "She remains focused on the older woman.",
         choices: [
-          { label: "Is this your mother?", 
+          { label: "\"Is this your mother?\"", 
             lines: [
               { speaker: "woman", text:"\"Grandmother.\" She replies.", sprite:"/mari/mari_neutral.png"},
-              { speaker: "narration", dimmed: true, text:"I realize in my time away from time, spent idling in my machine, I've become terrible at guessing someone's age."}
+              { speaker: "narration", text:"I realize in my time away from time, spent idling in my machine, I've become terrible at guessing someone's age."}
             ]
           }
         ]
       },
+      
+      // -------- APARTMENT — PART 2 -----------------------------------------
       {speaker: "narration", dimmed: true, text:"I nod. We both watch the old woman lying there, coming to terms with whatever she's coming to terms with."},
       {speaker: "narration", text:"TAMMY discreetly beeps, reminding me of the job I'm here to do; Fix the rift in our fabric of space-time."},
 
       {speaker: "narration", text:"If we stay too long, the damage could get worse.",
         choices: [
-          {label: "\”I’m not saying this to hurt you. All I’m saying is that since you weren’t there when this actually happened, you can’t be here now.\”"}
+          {label: "\”I’m not saying this to hurt you. All I’m saying is that since you weren’t there when this actually happened, you can’t be here now.\”"},
         ]
       },
+      {dimmed: true, text: "The woman ignores me and doesn't take her eyes off her grandmother. "},
+      {text: "For a while, I’m not sure she’s heard or maybe she heard me but doesn’t understand, but then she looks at me."},
+      {speaker: "woman", dimmed: false, text: "\"So what is this, an illusion? A dream?\""},
+      {speaker: "narration", text: "",
+        choices: [{label: "\"More like a window.\""},]
+      },
+      {speaker: "narration", text: "",
+        choices: [{label: "\"By using your time machine this way, you are creating a small porthole into another universe, a neighboring universe.\""},]
+      },
+
+      {speaker: "woman", text: "She understands immediately. Smart cookie."},
+
+      
+
+
+
+
 
 
 
       // BRANCH 1: ENDING DIALOGUE -> Cuts to choices array
-      {speaker: "woman", text: "Who are you?", sprite: "/mari/mari_neutral.png",},
+      {speaker: "woman", text: "WHO ARE YOU?", sprite: "/mari/mari_neutral.png",},
     ],
     // After an in-scene choice's lines play out, the scene advances via this.
     next: "ending_collapse",
