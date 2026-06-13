@@ -12,6 +12,9 @@ export interface Line {
   // Optional per-line sprite. When set, the character art swaps to this as the
   // line is shown; when omitted, the line keeps the scene's character.sprite.
   sprite?: string;
+  // Optional dim. true shows the current sprite at 50% opacity; carries forward
+  // like sprite/speaker, but a line that changes the sprite resets it to false.
+  dimmed?: boolean;
   // Optional inline choices. When present, this line ends in a decision instead
   // of a plain "continue": the player picks an option and the scene keeps going
   // (the choice can splice in more lines, set flags, or jump). A pure prompt

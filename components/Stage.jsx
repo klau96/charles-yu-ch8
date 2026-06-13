@@ -28,26 +28,40 @@ export function Stage() {
 
   const activeLine = script[lineIndex];
 
-  // Sprite and speaker both carry forward: a line that omits either keeps the
-  // last value set by an earlier line, so you only set them when they change.
-  // Sprite starts from the scene's character sprite; speaker defaults to
-  // "narration" until a line names one.
+  // Sprite, dim, and speaker all carry forward: a line that omits one keeps the
+  // last value set earlier, so you only set them when they change. Sprite starts
+  // from the scene's character sprite; speaker defaults to "narration". A line's
+  // `dimmed` overrides the carried value — but changing the sprite first resets
+  // dim to false, so a new sprite shows full unless that same line re-dims it.
   let sprite = node.character?.sprite;
+  let dimmed = false;
   let speaker = "narration";
   for (let i = 0; i <= lineIndex && i < script.length; i++) {
-    if (script[i]?.sprite) sprite = script[i].sprite;
-    if (script[i]?.speaker) speaker = script[i].speaker;
+    const line = script[i];
+    // `!== undefined` (not truthiness) so an explicit sprite: "" clears the
+    // sprite (nothing renders), while an omitted sprite carries the current one
+    // forward. Either way, an explicit sprite resets the dim.
+    if (line?.sprite !== undefined) {
+      sprite = line.sprite;
+      dimmed = false;
+    }
+    if (line?.dimmed !== undefined) dimmed = line.dimmed;
+    if (line?.speaker) speaker = line.speaker;
   }
 
   const atLastLine = lineIndex >= script.length - 1;
   const advanceLine = () => setLineIndex((i) => Math.min(i + 1, script.length - 1));
 
   // Choices to offer at the current line: the line's own inline `choices`, or
-  // (legacy) a choice node's `choices` at the end of its base script.
-  const baseLen = node.script?.length ?? 0;
+  // (legacy) a choice node's `choices` when we reach the LAST line of the base
+  // script. Match that line by REFERENCE, not index — an in-scene choice earlier
+  // in the script can splice lines in and shift indices, which would otherwise
+  // make the node-level choices appear on a spliced line instead of the end.
+  const baseScript = node.script ?? [];
+  const lastBaseLine = baseScript[baseScript.length - 1];
   const choices =
     activeLine?.choices ??
-    (node.type === "choice" && lineIndex === baseLen - 1 ? node.choices : undefined);
+    (node.type === "choice" && activeLine === lastBaseLine ? node.choices : undefined);
 
   // Picking a choice does ONE of three things — none of which has to leave the
   // scene:
@@ -83,7 +97,7 @@ export function Stage() {
 
         {/* z-10 — character sprite, driven by the active line. `key` remounts the
             sprite on a change so it fades in from scratch (see CharacterSprite). */}
-        {sprite && <CharacterSprite key={sprite} src={sprite} />}
+        {sprite && <CharacterSprite key={sprite} src={sprite} dim={dimmed} />}
 
         {/* z-20 — interaction layer, chosen by node.type inside SceneRenderer */}
         <div className="absolute inset-0 z-20">
@@ -110,9 +124,14 @@ export function Stage() {
 // The character sprite, faded in once its pixels are ready. It starts at
 // opacity-0 and transitions to full on load — so even a not-yet-cached sprite
 // never pops in half-painted. The ref's `complete` check covers the case where
-// a preloaded sprite is already cached before React's onLoad can attach.
-function CharacterSprite({ src }) {
+// a preloaded sprite is already cached before React's onLoad can attach. `dim`
+// keeps the sprite fully opaque but darkens its colors (brightness 50%); since
+// the element only remounts on a src change, toggling dim on the same sprite
+// cross-fades the brightness.
+function CharacterSprite({ src, dim }) {
   const [loaded, setLoaded] = useState(false);
+  const opacity = loaded ? "opacity-100" : "opacity-0"; // fade in once decoded
+  const brightness = dim ? "brightness-25" : "brightness-100"; // dim = darker, still opaque
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
@@ -122,9 +141,7 @@ function CharacterSprite({ src }) {
       src={src}
       alt=""
       onLoad={() => setLoaded(true)}
-      className={`absolute bottom-0 left-1/2 z-10 h-[85%] -translate-x-1/2 object-contain transition-opacity duration-500 ${
-        loaded ? "opacity-100" : "opacity-0"
-      }`}
+      className={`absolute bottom-0 left-1/2 z-10 h-[85%] -translate-x-1/2 object-contain transition-[opacity,filter] duration-500 ${opacity} ${brightness}`}
     />
   );
 }

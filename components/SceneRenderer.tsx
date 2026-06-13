@@ -38,11 +38,14 @@ export function SceneRenderer({
   // its typewriter animation.
   const dialogueRef = useRef<DialogueHandle>(null);
 
-  // Narration renders bare; spoken lines get quotes. The typewriter slices this
-  // whole string, so the quotes reveal naturally at the start and end.
-  const display = line ? (isNarration ? line.text : `“${line.text}”`) : "";
+  // Narration and the woman render bare (she carries her own quotes in the
+  // script when a line needs them); other spoken voices (yu) get auto-quotes.
+  // The typewriter slices this whole string, so any quotes reveal naturally at
+  // the start and end.
+  const quoted = speaker !== "narration" && speaker !== "woman";
+  const display = line ? (quoted ? `“${line.text}”` : line.text) : "";
   const textClass = isNarration
-    ? "font-serif italic text-neutral-300 leading-relaxed"
+    ? "font-serif italic text-neutral-100 leading-relaxed"
     : "font-sans";
 
   // Gate the controls until the line has finished typing. Reset per line during
@@ -59,7 +62,7 @@ export function SceneRenderer({
        the typewriter (skip() is a no-op once the line is fully shown). */
     <div
       onClick={() => dialogueRef.current?.skip()}
-      className={`absolute inset-x-0 bottom-0 p-6 bg-black/60 backdrop-blur text-neutral-100 select-none ${
+      className={`text-md absolute inset-x-0 bottom-0 p-6 bg-black/60 backdrop-blur text-neutral-100 select-none ${
         typingDone ? "" : "cursor-pointer"
       }`}
     >

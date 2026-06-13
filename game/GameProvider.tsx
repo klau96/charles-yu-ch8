@@ -12,6 +12,7 @@ import {
 import { gameReducer, initialState } from "./gameReducer";
 import { loadGame, saveGame } from "./save";
 import { collectSprites, preloadImages } from "./assets";
+import { releaseAudio } from "@/lib/sound";
 import type { GameState, Action } from "@/lib/types";
 
 interface GameContextValue {
@@ -47,6 +48,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
   // if the sprite count ever grows large.
   useEffect(() => {
     preloadImages(collectSprites());
+    // Release the audio keep-alive when the game tears down, so the device isn't
+    // held open after we're gone.
+    return () => releaseAudio();
   }, []);
 
   // Autosave on every state change — but NOT before hydration. Without this

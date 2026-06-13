@@ -10,6 +10,7 @@ import { textFx } from "./textConfig";
 let ctx: AudioContext | null = null;
 let buffer: AudioBuffer | null = null;
 let loading = false;
+let keepAlive: ConstantSourceNode | null = null;
 
 function getCtx(): AudioContext | null {
   if (typeof window === "undefined") return null;
@@ -23,7 +24,36 @@ function getCtx(): AudioContext | null {
   // Browsers start the context suspended until a gesture; the game begins on a
   // click, so resuming here is allowed.
   if (ctx.state === "suspended") ctx.resume().catch(() => {});
+  ensureKeepAlive(ctx);
   return ctx;
+}
+
+// Hold the audio device open with a silent constant signal so the first blip
+// after a quiet stretch (the player reading a line) doesn't wait for the device
+// to wake up — Bluetooth outputs especially can take seconds. Started lazily on
+// the first blip (via getCtx) and persists across the reading gaps; release it
+// with releaseAudio(). Degrades gracefully where ConstantSourceNode is missing.
+function ensureKeepAlive(audio: AudioContext): void {
+  if (keepAlive || typeof audio.createConstantSource !== "function") return;
+  const node = audio.createConstantSource();
+  const gain = audio.createGain();
+  gain.gain.value = 0; // inaudible — the device stays awake, the player hears nothing
+  node.connect(gain).connect(audio.destination);
+  node.start();
+  keepAlive = node;
+}
+
+// Stop holding the device open (e.g. when the game tears down, or sound is
+// turned off). Lets the device sleep again; safe to call when nothing's running.
+export function releaseAudio(): void {
+  if (!keepAlive) return;
+  try {
+    keepAlive.stop();
+    keepAlive.disconnect();
+  } catch {
+    // already stopped — ignore
+  }
+  keepAlive = null;
 }
 
 function loadBuffer(audio: AudioContext, src: string): void {
@@ -59,6 +89,11 @@ export function playBlip(): void {
       const gain = audio.createGain();
       gain.gain.value = s.volume;
       source.connect(gain).connect(audio.destination);
+      // Disconnect once the sample finishes so the nodes don't pile up.
+      source.onended = () => {
+        source.disconnect();
+        gain.disconnect();
+      };
       source.start();
       return;
     }
@@ -82,6 +117,12 @@ function synth(audio: AudioContext, volume: number): void {
   gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
 
   osc.connect(gain).connect(audio.destination);
+  // `onended` fires at the scheduled stop time below — tear the nodes down then
+  // so the graph never grows over a long session.
+  osc.onended = () => {
+    osc.disconnect();
+    gain.disconnect();
+  };
   osc.start(t);
   osc.stop(t + 0.06);
 }
