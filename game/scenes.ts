@@ -198,6 +198,7 @@ export const scenes: Record<string, Scene> = {
   return_to_tm31: {
     type: "choice",
     background: "tm-31.jpeg",
+    music: "tm31",
     effect: "collapse",
     script: [
       { speaker: "narration", text: "Day in the life of a time traveling technician living in the TM-31.",},

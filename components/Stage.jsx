@@ -34,7 +34,15 @@ const FLASH_OPTIONS = { duration: 1000, easing: "ease-out" };
 
 // Persistent red alarm — an infinite pulse on a red overlay. WAAPI so it loops
 // and isn't pruned; runs while the "redblink" effect is active, cancels when off.
-const RED_BLINK_KEYFRAMES = [{ opacity: 0 }, { opacity: 0.5 }, { opacity: 0 }];
+// The red wash is driven by the background's ALPHA (not element opacity), and a
+// `backdrop-filter: saturate()` pulses in sync — so the scene's colors swell
+// with the red light for a more dramatic flood. (Element opacity stays 1, so the
+// backdrop-filter isn't throttled by it.) webkit-prefixed for older Safari.
+const RED_BLINK_KEYFRAMES = [
+  { backgroundColor: "rgba(185, 28, 28, 0)", backdropFilter: "saturate(1)", WebkitBackdropFilter: "saturate(1)" },
+  { backgroundColor: "rgba(185, 28, 28, 0.55)", backdropFilter: "saturate(2.6)", WebkitBackdropFilter: "saturate(2.6)" },
+  { backgroundColor: "rgba(185, 28, 28, 0)", backdropFilter: "saturate(1)", WebkitBackdropFilter: "saturate(1)" },
+];
 const RED_BLINK_OPTIONS = { duration: 1200, easing: "ease-in-out", iterations: Infinity };
 
 // The compositor. It paints the persistent layers for the current node and
@@ -225,8 +233,9 @@ export function Stage() {
         </div>
 
         {/* z-10 — persistent red alarm overlay, pulsed by WAAPI while "redblink"
-            is active. Below the dialogue so text stays readable. */}
-        <div ref={redRef} className="pointer-events-none absolute inset-0 z-10 bg-red-700 opacity-0" />
+            is active. Transparent at rest (the pulse sets its background + backdrop
+            saturate); below the dialogue so text stays readable. */}
+        <div ref={redRef} className="pointer-events-none absolute inset-0 z-10" />
 
         {/* z-20 — interaction layer, chosen by node.type inside SceneRenderer */}
         <div className="absolute inset-0 z-20">

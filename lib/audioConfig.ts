@@ -27,6 +27,7 @@ export const SFX: Record<string, SfxClip> = {
 // Looping background music, controlled from a line's / scene's `music`.
 export const MUSIC: Record<string, MusicClip> = {
   chinatown: {src: "/music/chinatown.opus", volume: 0.4},
+  tm31: {src: "/music/tm-31.opus", volume: 0.4},
   // rain:  { src: "/music/rain.mp3", volume: 0.4 },
   // alarm: { src: "/music/alarm.mp3", volume: 0.6 },
 };
