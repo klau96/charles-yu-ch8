@@ -32,7 +32,7 @@ const SECTIONS: Section[] = [
           , by Charles Yu.
         </li>
         
-        <li className="text-neutral-400">Art &amp; sprites: u/TiaStoleYourToast on Reddit for the smiling Mari. I edited it to make the rest.</li>
+        <li className="text-neutral-400">Art &amp; Sprites: u/TiaStoleYourToast on Reddit for the smiling Mari. I edited it to make the rest.</li>
       </ul>
     ),
   },
@@ -50,9 +50,14 @@ const SECTIONS: Section[] = [
     label: "Thanks",
     body: (
       <>
-        <p className="font-serif text-md leading-tight text-neutral-100">Professor Zimmer</p>
+        <p className="font-serif text-md leading-tight text-neutral-100">Professor Zac Zimmer</p>
         <p className="font-serif italic text-[13px] leading-relaxed text-neutral-300">
-          Many thanks for the wonderful quarter and for passionately introducing us to humanitarian side of time travel! 
+          Many thanks for the wonderful quarter and for passionately introducing us to humanitarian side of time travel, and giving us the awareness to know whether we're in a modern day time loop.
+        </p>
+        <span className="my-3 block h-px w-full bg-white/20"></span>
+        <p className="font-serif text-md leading-tight text-neutral-100">Nghiem Tran</p>
+        <p className="font-serif italic text-[13px] leading-relaxed text-neutral-300">
+          Thank you for leading section every week! It was fun to always have down-to-earth conversations in the middle of the section topics. 
         </p>
       </>
     ),

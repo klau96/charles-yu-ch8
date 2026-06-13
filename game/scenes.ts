@@ -29,7 +29,7 @@ export const scenes: Record<string, Scene> = {
       { speaker: "narration", text: "A woman a little younger than I am, maybe twenty-five, twenty six. She's kneeling over an older woman who lies still, in an awkward position, her limbs slumped over the couch." },
       { text: "The older woman looks up at the ceiling, looking through it, filled with a clear-eyed awareness of what's happening." },
       // This line swaps the sprite as it's shown.
-      { text: "The woman does not notice your presence. Her face is covered in tears that have long been dried around her strained red eyes." },
+      { text: "The woman does not notice your presence. Her face is covered in tears that have long been dried. Her eyes stained and red." },
 
       { text: "Her hands embrace her grandmother's hands, but without physical contact, her warmth is left unreciprocated.", 
         
@@ -49,6 +49,7 @@ export const scenes: Record<string, Scene> = {
             {text: "..."},
             {text: "......"},
             {text: "........."},
+            {text: "She finally notices you. But she doesn't waver."}
           ]},
         ],
       },
@@ -66,7 +67,11 @@ export const scenes: Record<string, Scene> = {
       {speaker: "narration", dimmed: true, text:"I nod. We both watch the old woman lying there, coming to terms with whatever she's coming to terms with."},
       {speaker: "narration", text:"TAMMY discreetly beeps, reminding me of the job I'm here to do; Fix the rift in our fabric of space-time."},
 
-
+      {speaker: "narration", text:"If we stay too long, the damage could get worse.",
+        choices: [
+          {label: "\”I’m not saying this to hurt you. All I’m saying is that since you weren’t there when this actually happened, you can’t be here now.\”"}
+        ]
+      },
 
 
 
