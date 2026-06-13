@@ -5,7 +5,7 @@
 import type { EffectToken, Line } from "./types";
 
 const ONE_SHOT = new Set<string>(["flash", "shake"]);
-const PERSISTENT = new Set<string>(["grayscale", "threshold"]);
+const PERSISTENT = new Set<string>(["grayscale", "threshold", "redblink"]);
 
 function tokens(fx: Line["fx"]): EffectToken[] {
   if (!fx) return [];

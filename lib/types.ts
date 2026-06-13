@@ -8,7 +8,7 @@ export type Speaker = "narration" | "woman" | "yu";
 //  • Persistent — a filter that carries forward (like sprite/dimmed) until you
 //    turn it off with "clear" (all) or "-name" (one).
 export type OneShotEffect = "flash" | "shake";
-export type PersistentEffect = "grayscale" | "threshold";
+export type PersistentEffect = "grayscale" | "threshold" | "redblink";
 export type EffectToken = OneShotEffect | PersistentEffect | `-${PersistentEffect}` | "clear";
 
 export interface Line {

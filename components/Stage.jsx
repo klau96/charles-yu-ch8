@@ -14,14 +14,25 @@ const SHAKE_KEYFRAMES = [
   { transform: "translate(4px, -2px) rotate(0.3deg)" },
   { transform: "translate(-3px, 1px)" },
   { transform: "translate(3px, 2px) rotate(0.3deg)" },
+  
+  { transform: "translate(-4px, 2px) rotate(-0.4deg)" },
+  { transform: "translate(4px, -2px) rotate(0.3deg)" },
+  { transform: "translate(-3px, 1px)" },
+  { transform: "translate(3px, 2px) rotate(0.3deg)" },
+
   { transform: "translate(0, 0)" },
 ];
-const SHAKE_OPTIONS = { duration: 520, easing: "ease-in-out" };
+const SHAKE_OPTIONS = { duration: 800, easing: "ease-in-out" };
 
 // One-shot flash, also via the Web Animations API (a CSS @keyframes referenced
 // only from inline style gets tree-shaken out of the built CSS by Tailwind v4).
 const FLASH_KEYFRAMES = [{ opacity: 0.95 }, { opacity: 0 }];
 const FLASH_OPTIONS = { duration: 1000, easing: "ease-out" };
+
+// Persistent red alarm — an infinite pulse on a red overlay. WAAPI so it loops
+// and isn't pruned; runs while the "redblink" effect is active, cancels when off.
+const RED_BLINK_KEYFRAMES = [{ opacity: 0 }, { opacity: 0.5 }, { opacity: 0 }];
+const RED_BLINK_OPTIONS = { duration: 1200, easing: "ease-in-out", iterations: Infinity };
 
 // The compositor. It paints the persistent layers for the current node and
 // hands the interaction layer off to SceneRenderer. It does NOT know which
@@ -74,7 +85,8 @@ export function Stage() {
   // filters (grayscale/threshold) carry forward through the script; one-shots
   // (flash/shake) fire only on the active line.
   const lineKey = `${state.current}:${lineIndex}`;
-  const filter = filterCss(resolvePersistent(script, lineIndex));
+  const activeEffects = resolvePersistent(script, lineIndex);
+  const filter = filterCss(activeEffects);
   const oneShots = oneShotsOf(activeLine);
 
   // One-shots played imperatively (Web Animations API) on the active line —
@@ -88,6 +100,17 @@ export function Stage() {
     if (shaking) viewportRef.current?.animate(SHAKE_KEYFRAMES, SHAKE_OPTIONS);
     if (flashing) flashRef.current?.animate(FLASH_KEYFRAMES, FLASH_OPTIONS);
   }, [lineKey, shaking, flashing]);
+
+  // Persistent red alarm: starts an infinite pulse when "redblink" becomes
+  // active (carried forward like the other persistent effects) and cancels it
+  // when cleared. Keyed on the boolean so it doesn't restart every line.
+  const redRef = useRef(null);
+  const redBlinking = activeEffects.has("redblink");
+  useEffect(() => {
+    if (!redBlinking) return;
+    const anim = redRef.current?.animate(RED_BLINK_KEYFRAMES, RED_BLINK_OPTIONS);
+    return () => anim?.cancel();
+  }, [redBlinking]);
 
   // Choices to offer at the current line: the line's own inline `choices`, or
   // (legacy) a choice node's `choices` when we reach the LAST line of the base
@@ -145,6 +168,10 @@ export function Stage() {
               sprite on a change so it fades in from scratch (see CharacterSprite). */}
           {sprite && <CharacterSprite key={sprite} src={sprite} dim={dimmed} />}
         </div>
+
+        {/* z-10 — persistent red alarm overlay, pulsed by WAAPI while "redblink"
+            is active. Below the dialogue so text stays readable. */}
+        <div ref={redRef} className="pointer-events-none absolute inset-0 z-10 bg-red-700 opacity-0" />
 
         {/* z-20 — interaction layer, chosen by node.type inside SceneRenderer */}
         <div className="absolute inset-0 z-20">

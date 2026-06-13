@@ -180,12 +180,8 @@ export const scenes: Record<string, Scene> = {
       // IN-SCENE choice: `lines` play here in the apartment, then `next` above
       // fires. (Demo lines — replace with your own.)
       {
-        label: "(Leave the Apartment)",
+        label: "(Leave the Apartment, return to the TM-31)",
         next: "ending_collapse",
-        // lines: [
-        //   { speaker: "narration", text: "You say nothing. The room holds its breath with her.", sprite: "/mari/mari_neutral.png" },
-        //   { speaker: "woman", text: "...Most people would have left by now.", sprite: "/mari/mari_off.png" },
-        // ],
       },
       // CLASSIC choice: jumps straight to another node.
       // { label: "\"She can't see you, can she?\"", next: "ending_collapse", set: { broachedGrief: true } },
@@ -198,9 +194,25 @@ export const scenes: Record<string, Scene> = {
     background: "tm-31.jpeg",
     effect: "collapse",
     script: [
-      {
-        speaker: "narration",
-        text: "The grandmother looks up. She smiles at the woman. The room begins to fold inward.",
+      { speaker: "narration", text: "Day in the life of a time traveling technician living in the TM-31.",},
+      { text: "A typical customer gets into a machine that can literally take her whenever she’d like to go. Do you want to know what the first stop usually is? Take a guess.",},
+      { text: "Don’t guess. You already know: the unhappiest day of her life—",},
+      { fx: "shake", text: "—The world shakes, and a loud tear ripples across the world.",},
+      { text: ". . .",},
+      { text: "That does not sound regular.",},
+      { fx: "redblink", text: "The TM-31 sounds the alarm. Code Red. TAMMY begins panicking, so I place her back into the charging dock.",},
+      { text: "I have to stay calm. For as long as I've stayed in here, I've read the instructions manual enough times to know protocol.",},
+      { text: "According to the instructions manual, it's a 0.9 alpha-gradient rift collapse. Imminent situation.",},
+      { text: "I'm safe in this box, as long as I switch lines and follow the temporal tangent back to U-31.",},
+      { text: "TAMMY's beeping has syncronized with the alarm. She wants me to switch lines, immediately.",},
+      { text: "But I can't help but wonder. What the hell happened? Is that woman going to be okay?",},
+      { text: "",
+        choices: [
+          {label: "(Leave the TM-31)"},
+          {label: "(Set the line back to U-31)", lines: [
+            {text: "I can't just leave. "}
+          ]},
+        ]
       },
     ],
   },
