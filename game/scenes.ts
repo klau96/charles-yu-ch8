@@ -201,19 +201,47 @@ export const scenes: Record<string, Scene> = {
       { text: ". . .",},
       { text: "That does not sound regular.",},
       { fx: "redblink", text: "The TM-31 sounds the alarm. Code Red. TAMMY begins panicking, so I place her back into the charging dock.",},
-      { text: "I have to stay calm. For as long as I've stayed in here, I've read the instructions manual enough times to know protocol.",},
+      { fx: "shake", text: "I have to stay calm. I've read the instructions manual enough times to know protocol.",},
       { text: "According to the instructions manual, it's a 0.9 alpha-gradient rift collapse. Imminent situation.",},
       { text: "I'm safe in this box, as long as I switch lines and follow the temporal tangent back to U-31.",},
-      { text: "TAMMY's beeping has syncronized with the alarm. She wants me to switch lines, immediately.",},
+      { fx: "shake",text: "TAMMY's beeping has syncronized with the alarm. She wants me to switch lines, immediately.",},
       { text: "But I can't help but wonder. What the hell happened? Is that woman going to be okay?",},
       { text: "",
         choices: [
           {label: "(Leave the TM-31)"},
           {label: "(Set the line back to U-31)", lines: [
-            {text: "I can't just leave. "}
+            { text: "I can't just leave yet.", fx: "shake",
+              choices: [
+                {label: "(Exit the TM-31)"},
+                {label: "(Set the line back to U-31)", lines: [
+                  { text: "I can't just leave yet.", fx: "shake",
+                    choices: [
+                      {label: "(Exit the TM-31)"},
+                      {label: "(Set the line back to U-31)", lines: [
+                        { text: "I can't just leave yet.", fx: "shake",
+                          choices: [
+                            {label: "(Exit the TM-31)"},
+                            {label: "(Set the line back to U-31)",
+                              lines: [
+                              {text: "My conscious begs to differ, but before I could regret the decision, I switch the line and set course back to U-31."},
+                            ]
+                            // TODO: Next, switch to ending: JUST FOLLOWING PROTOCOL. 
+                          },
+                          ]
+                        },
+                      ]},
+                    ]
+                  },
+                ]},
+              ]
+            },
           ]},
         ]
       },
+
+      { text: "Alright. Tammy, take care of the box. I'll be right back.",},
     ],
   },
 };
+
+

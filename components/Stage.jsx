@@ -22,7 +22,7 @@ const SHAKE_KEYFRAMES = [
 
   { transform: "translate(0, 0)" },
 ];
-const SHAKE_OPTIONS = { duration: 800, easing: "ease-in-out" };
+const SHAKE_OPTIONS = { duration: 600, easing: "ease-in-out" };
 
 // One-shot flash, also via the Web Animations API (a CSS @keyframes referenced
 // only from inline style gets tree-shaken out of the built CSS by Tailwind v4).
