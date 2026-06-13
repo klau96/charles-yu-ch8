@@ -45,7 +45,7 @@ export function SceneRenderer({
   const quoted = speaker !== "narration" && speaker !== "woman";
   const display = line ? (quoted ? `“${line.text}”` : line.text) : "";
   const textClass = isNarration
-    ? "font-serif italic text-neutral-100 leading-relaxed"
+    ? "text-lg font-serif italic text-neutral-100 leading-relaxed"
     : "font-sans";
 
   // Gate the controls until the line has finished typing. Reset per line during
@@ -62,7 +62,7 @@ export function SceneRenderer({
        the typewriter (skip() is a no-op once the line is fully shown). */
     <div
       onClick={() => dialogueRef.current?.skip()}
-      className={`text-lg absolute inset-x-0 bottom-0 p-6 bg-black/60 backdrop-blur text-neutral-100 select-none ${
+      className={`absolute inset-x-0 bottom-0 p-6 bg-black/60 backdrop-blur text-neutral-100 select-none ${
         typingDone ? "" : "cursor-pointer"
       }`}
     >

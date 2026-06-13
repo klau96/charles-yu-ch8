@@ -1,9 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGame } from "@/game/GameProvider";
 import { scenes } from "@/game/scenes";
+import { filterCss, oneShotsOf, resolvePersistent } from "@/lib/effects";
 import { SceneRenderer } from "./SceneRenderer";
+
+// Earthquake jitter, played imperatively (Web Animations API) so it replays per
+// shake-line without remounting the frame.
+const SHAKE_KEYFRAMES = [
+  { transform: "translate(0, 0)" },
+  { transform: "translate(-4px, 2px) rotate(-0.4deg)" },
+  { transform: "translate(4px, -2px) rotate(0.3deg)" },
+  { transform: "translate(-3px, 1px)" },
+  { transform: "translate(3px, 2px) rotate(0.3deg)" },
+  { transform: "translate(0, 0)" },
+];
+const SHAKE_OPTIONS = { duration: 520, easing: "ease-in-out" };
+
+// One-shot flash, also via the Web Animations API (a CSS @keyframes referenced
+// only from inline style gets tree-shaken out of the built CSS by Tailwind v4).
+const FLASH_KEYFRAMES = [{ opacity: 0.95 }, { opacity: 0 }];
+const FLASH_OPTIONS = { duration: 1000, easing: "ease-out" };
 
 // The compositor. It paints the persistent layers for the current node and
 // hands the interaction layer off to SceneRenderer. It does NOT know which
@@ -52,6 +70,25 @@ export function Stage() {
   const atLastLine = lineIndex >= script.length - 1;
   const advanceLine = () => setLineIndex((i) => Math.min(i + 1, script.length - 1));
 
+  // Screen effects resolved from `fx` tokens (see lib/effects). Persistent
+  // filters (grayscale/threshold) carry forward through the script; one-shots
+  // (flash/shake) fire only on the active line.
+  const lineKey = `${state.current}:${lineIndex}`;
+  const filter = filterCss(resolvePersistent(script, lineIndex));
+  const oneShots = oneShotsOf(activeLine);
+
+  // One-shots played imperatively (Web Animations API) on the active line —
+  // keyed on lineKey so they re-fire each time their line is reached. Earthquake
+  // jitters the whole viewport; flash washes a white overlay and settles back.
+  const viewportRef = useRef(null);
+  const flashRef = useRef(null);
+  const shaking = oneShots.includes("shake");
+  const flashing = oneShots.includes("flash");
+  useEffect(() => {
+    if (shaking) viewportRef.current?.animate(SHAKE_KEYFRAMES, SHAKE_OPTIONS);
+    if (flashing) flashRef.current?.animate(FLASH_KEYFRAMES, FLASH_OPTIONS);
+  }, [lineKey, shaking, flashing]);
+
   // Choices to offer at the current line: the line's own inline `choices`, or
   // (legacy) a choice node's `choices` when we reach the LAST line of the base
   // script. Match that line by REFERENCE, not index — an in-scene choice earlier
@@ -85,26 +122,36 @@ export function Stage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-linear-to-br from-black to-slate-950">
-      {/* Fixed-aspect, letterboxed viewport. Children are absolutely stacked. */}
-      <div className="relative w-full max-w-5xl aspect-video overflow-hidden bg-neutral-900">
-        {/* z-0 — background art */}
-        {node.background && (
-          <div
-            className="absolute inset-0 z-0 bg-cover bg-center transition-opacity duration-500"
-            style={{ backgroundImage: `url(${node.background})` }}
-          />
-        )}
+      {/* Fixed-aspect, letterboxed viewport. Children are absolutely stacked.
+          `viewportRef` is the shake target — the whole frame jitters together. */}
+      <div
+        ref={viewportRef}
+        className="relative w-full max-w-5xl aspect-video overflow-hidden bg-neutral-900"
+      >
+        {/* z-0 — WORLD layer: background + character. Color filters (grayscale /
+            threshold) apply here only, so the dialogue above stays crisp. */}
+        <div
+          className="absolute inset-0 z-0 transition-[filter] duration-700"
+          style={{ filter }}
+        >
+          {node.background && (
+            <div
+              className="absolute inset-0 bg-cover bg-center transition-opacity duration-500"
+              style={{ backgroundImage: `url(${node.background})` }}
+            />
+          )}
 
-        {/* z-10 — character sprite, driven by the active line. `key` remounts the
-            sprite on a change so it fades in from scratch (see CharacterSprite). */}
-        {sprite && <CharacterSprite key={sprite} src={sprite} dim={dimmed} />}
+          {/* character sprite, driven by the active line. `key` remounts the
+              sprite on a change so it fades in from scratch (see CharacterSprite). */}
+          {sprite && <CharacterSprite key={sprite} src={sprite} dim={dimmed} />}
+        </div>
 
         {/* z-20 — interaction layer, chosen by node.type inside SceneRenderer */}
         <div className="absolute inset-0 z-20">
           <SceneRenderer
             line={activeLine}
             speaker={speaker}
-            lineKey={`${state.current}:${lineIndex}`}
+            lineKey={lineKey}
             atLastLine={atLastLine}
             choices={choices}
             onAdvanceLine={advanceLine}
@@ -112,10 +159,33 @@ export function Stage() {
           />
         </div>
 
-        {/* z-30 — full-screen effects overlay (collapse, glitch). Stub for now. */}
+        {/* z-30 — legacy full-screen effect overlay (collapse). Stub for now. */}
         {node.effect && (
           <div className="absolute inset-0 z-30 pointer-events-none" data-effect={node.effect} />
         )}
+
+        {/* z-40 — one-shot flash overlay. Permanently mounted at opacity 0; the
+            WAAPI animation above washes it white then settles back to clear. */}
+        <div ref={flashRef} className="pointer-events-none absolute inset-0 z-40 bg-white opacity-0" />
+
+        {/* Hidden SVG: a true 1-bit black/white threshold filter (fx: "threshold").
+            feColorMatrix → luminance grey, then a discrete transfer snaps each
+            channel to 0 or 1. The "0 1" split is the cutoff. */}
+        <svg aria-hidden="true" className="absolute h-0 w-0">
+          <defs>
+            <filter id="fx-threshold" colorInterpolationFilters="sRGB">
+              <feColorMatrix
+                type="matrix"
+                values="0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0 0 0 1 0"
+              />
+              <feComponentTransfer>
+                <feFuncR type="discrete" tableValues="0 1" />
+                <feFuncG type="discrete" tableValues="0 1" />
+                <feFuncB type="discrete" tableValues="0 1" />
+              </feComponentTransfer>
+            </filter>
+          </defs>
+        </svg>
       </div>
     </main>
   );

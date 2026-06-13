@@ -20,7 +20,7 @@ export interface TextFxConfig {
 export const textFx: TextFxConfig = {
   typewriter: {
     enabled: true,
-    speed: 32,
+    speed: 24,
   },
   sound: {
     enabled: true,

@@ -3,6 +3,14 @@
 
 export type Speaker = "narration" | "woman" | "yu";
 
+// Screen effects, triggered from a line's `fx`.
+//  • One-shot — plays once when the line shows (replays if the line is revisited).
+//  • Persistent — a filter that carries forward (like sprite/dimmed) until you
+//    turn it off with "clear" (all) or "-name" (one).
+export type OneShotEffect = "flash" | "shake";
+export type PersistentEffect = "grayscale" | "threshold";
+export type EffectToken = OneShotEffect | PersistentEffect | `-${PersistentEffect}` | "clear";
+
 export interface Line {
   // Optional speaker. When omitted, the line carries forward the previous line's
   // speaker (set it only when the speaker changes); the first line defaults to
@@ -20,6 +28,9 @@ export interface Line {
   // (the choice can splice in more lines, set flags, or jump). A pure prompt
   // line can use text: "". See Choice for what an option can do.
   choices?: Choice[];
+  // Optional screen effect(s) for this line — a single token or a list, e.g.
+  // fx: "flash", fx: "grayscale", fx: ["shake", "threshold"], fx: "clear".
+  fx?: EffectToken | EffectToken[];
 }
 
 export interface Choice {

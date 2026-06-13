@@ -10,7 +10,7 @@ export const scenes: Record<string, Scene> = {
     type: "narration",
     background: "oakland_chinatown.jpeg",
     script: [
-      { speaker: "narration", text: "Client call. I'm in Oakland, in Chinatown, sometime in the third quarter of the twentieth century.", },
+      { speaker: "narration", text: "Client call. I'm in Oakland, in Chinatown, sometime in the third quarter of the twentieth century.", fx: "flash", },
       { text: "People are bustling, cars are driving past, the smell of a chinese uncle's cigarette smoke lingers. He sits on a red and metal chair the size of a small cardboard box.", },
       { text: "Quite the place for a momentary rift disruption. Though I'm not surprised, most of the time it's a normal place in a normal city.", },
       { text: "I say this all the time, as if it changes anything. This is how it is on the regular.", },
@@ -31,7 +31,7 @@ export const scenes: Record<string, Scene> = {
       { speaker: "narration", text: "A woman a little younger than I am, maybe twenty-five, twenty six. She's kneeling over an older woman who lies still, in an awkward position, her limbs slumped over the couch." },
       { text: "The older woman looks up at the ceiling, looking through it, filled with a clear-eyed awareness of what's happening." },
       // This line swaps the sprite as it's shown.
-      { text: "The woman does not notice your presence. Her face is covered in tears that have long been dried. Her eyes stained and red." },
+      { text: "The younger woman does not notice your presence. Her face is covered in tears that have long been dried. Her eyes stained and red." },
 
       { text: "Her hands embrace her grandmother's hands, but without physical contact, her warmth is left unreciprocated.", 
         
@@ -42,16 +42,18 @@ export const scenes: Record<string, Scene> = {
             { speaker: "narration",
               text: "She doesn't turn around or look in my direction.",
               choices: [
-                {label: "\"You can't actually see her. This didn't really happen. You weren't there when she died.\""}
+                {label: "\"You can't actually see her. This didn't really happen. You weren't there when she died.\"", 
+                  lines: [
+                    { speaker: "narration", text: "The younger woman glares at me, angry for a moment.", sprite: "/mari/mari_angry.png",},
+                  ]
+                },
               ]},
-              { speaker: "narration", text: "The younger woman glares at me, angry for a moment.", sprite: "/mari/mari_angry.png",},
           ]
           },
-          { label: "(Say nothing)", lines: [
+          { label: "...", lines: [
             {text: "..."},
             {text: "......"},
-            {text: "........."},
-            {text: "She finally notices you. But she doesn't waver."}
+            {text: "She finally notices you. But her attention doesn't waver."}
           ]},
         ],
       },
@@ -70,10 +72,11 @@ export const scenes: Record<string, Scene> = {
       // -------- APARTMENT — PART 2 -----------------------------------------
       {speaker: "narration", dimmed: true, text:"I nod. We both watch the old woman lying there, coming to terms with whatever she's coming to terms with."},
       {speaker: "narration", text:"TAMMY discreetly beeps, reminding me of the job I'm here to do; Fix the rift in our fabric of space-time."},
+      {speaker: "narration", text:"If we stay too long, the damage could get worse."},
 
-      {speaker: "narration", text:"If we stay too long, the damage could get worse.",
+      {speaker: "narration", text: "",
         choices: [
-          {label: "\”I’m not saying this to hurt you. All I’m saying is that since you weren’t there when this actually happened, you can’t be here now.\”"},
+          {label: "\”You shouldn't be here. I’m not saying this to hurt you. All I’m saying is that since you weren’t there when this actually happened, you can’t be here now.\”"},
         ]
       },
       {dimmed: true, text: "The woman ignores me and doesn't take her eyes off her grandmother. "},
@@ -86,14 +89,55 @@ export const scenes: Record<string, Scene> = {
         choices: [{label: "\"By using your time machine this way, you are creating a small porthole into another universe, a neighboring universe.\""},]
       },
 
-      {speaker: "woman", text: "She understands immediately. Smart cookie."},
+      {speaker: "woman", text: "She understands immediately. Smart cookie. Let's hope she understands the rest."},
 
+      {speaker: "narration", text: "",
+        choices: [{label: "\"This living room is the vertex between U-31 and U-31A. You are bending space and time and light to see into a past.\""},]
+      },
+      {
+        sprite: "/mari/mari_slightfrown.png",
+        speaker: "narration", text: "",
+        choices: [{label: "\"A false past, a past you wish to go to.\""},]
+      },
+      {speaker: "narration", text: "",
+        choices: [{label: "\"Although you can see what happened then over there, you're not really standing next to her.\""},]
+      },
+      {
+        sprite: "/mari/mari_neutral.png",
+        speaker: "narration", text: "",
+        choices: [{label: "\"You are in your own universe, our universe. You are infinitely far away.\""},]
+      },
+      {speaker: "woman", text: "She takes a moment to digest this. Intuition allows me to guess the issue:"},
       
+      // -------- APARTMENT — PART 3 -----------------------------------------
+      {speaker: "narration", text: "",
+        choices: [{label: "\"You tampered with your Tau modulator.\""},]
+      },
 
+      {
+        sprite:"/mari/mari_embarassed.png",
+        speaker: "woman", text: "She gives me a guilty look.",
+      },
 
+      {speaker: "narration", text: "",
+        choices: [{label: "\"Don't worry, I see it all the time.\""},]
+      },
 
+      {sprite: "/mari/mari_slightfrown.png",
+        speaker: "woman", text: "\"I was a sophomore in college. She was the only reason I even made it there...\" She says."},
+      { speaker: "woman", text: "\"She called and I could hear something in her voice. I should have known. I should have known to come home...\""},
 
+      {speaker: "narration", text: "",
+        choices: [
+          {label: "\"You had your own life to start.\""},
+          {label: "\"Coming here won't fix the past.\""},
+        ]
+      },
 
+      { speaker: "woman", text: "\"I could have come home. My dad told me it would be soon. I could have come home.\""},
+      {speaker: "narration", text: "Grandmother slowly closes her eyes. A look of something unresolved twists across her face. A flicker of disappointment, and exhaust,"},
+      {speaker: "narration", text: "And then she takes her last breath, alone, the pot of stew untouched in the next room."},
+      
 
 
       // BRANCH 1: ENDING DIALOGUE -> Cuts to choices array
