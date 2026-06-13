@@ -27,9 +27,20 @@ export function collectSprites(): string[] {
   return [...out];
 }
 
-// Pull each URL into the browser cache and decode it, so a later <img> swap is
-// paint-ready instantly. Client-only; failures are ignored (a missing sprite
-// shouldn't break the game).
+// Every background URL referenced by the scene graph. These are CSS
+// background-image url()s, not <img>, but preloading still warms the same HTTP
+// cache the url() reads from — so the background is ready when the scene paints.
+export function collectBackgrounds(): string[] {
+  const out = new Set<string>();
+  for (const scene of Object.values(scenes)) {
+    if (scene.background) out.add(scene.background);
+  }
+  return [...out];
+}
+
+// Pull each URL into the browser cache and decode it, so a later <img> swap or
+// CSS background paint is instant. Client-only; failures are ignored (a missing
+// asset shouldn't break the game).
 export function preloadImages(urls: string[]): void {
   if (typeof window === "undefined") return;
   for (const src of urls) {

@@ -11,7 +11,7 @@ import {
 } from "react";
 import { gameReducer, initialState } from "./gameReducer";
 import { loadGame, saveGame } from "./save";
-import { collectSprites, preloadImages } from "./assets";
+import { collectSprites, collectBackgrounds, preloadImages } from "./assets";
 import { releaseAudio } from "@/lib/sound";
 import type { GameState, Action } from "@/lib/types";
 
@@ -43,11 +43,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setHydrated(true);
   }, []);
 
-  // Warm the browser's image cache once on mount so sprite swaps don't flash.
-  // The set is small, so we preload everything; switch to per-scene lookahead
-  // if the sprite count ever grows large.
+  // Warm the browser's image cache once on mount so sprites AND backgrounds don't
+  // flash on first paint. This runs while the title screen is up, so assets are
+  // cached before Stage renders. The set is small, so we preload everything;
+  // switch to per-scene lookahead if the asset count ever grows large.
   useEffect(() => {
-    preloadImages(collectSprites());
+    preloadImages([...collectSprites(), ...collectBackgrounds()]);
     // Release the audio keep-alive when the game tears down, so the device isn't
     // held open after we're gone.
     return () => releaseAudio();
