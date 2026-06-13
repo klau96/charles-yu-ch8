@@ -95,7 +95,6 @@ export const scenes: Record<string, Scene> = {
         choices: [{label: "\"This living room is the vertex between U-31 and U-31A. You are bending space and time and light to see into a past.\""},]
       },
       {
-        sprite: "/mari/mari_slightfrown.png",
         speaker: "narration", text: "",
         choices: [{label: "\"A false past, a past you wish to go to.\""},]
       },
@@ -103,7 +102,6 @@ export const scenes: Record<string, Scene> = {
         choices: [{label: "\"Although you can see what happened then over there, you're not really standing next to her.\""},]
       },
       {
-        sprite: "/mari/mari_neutral.png",
         speaker: "narration", text: "",
         choices: [{label: "\"You are in your own universe, our universe. You are infinitely far away.\""},]
       },
@@ -135,13 +133,46 @@ export const scenes: Record<string, Scene> = {
       },
 
       { speaker: "woman", text: "\"I could have come home. My dad told me it would be soon. I could have come home.\""},
-      {speaker: "narration", text: "Grandmother slowly closes her eyes. A look of something unresolved twists across her face. A flicker of disappointment, and exhaust,"},
-      {speaker: "narration", text: "And then she takes her last breath, alone, the pot of stew untouched in the next room."},
+      {
+        speaker: "narration", 
+        dimmed: true, 
+        text: "The young woman turns back to her grandmother, who is slowly closes her eyes. A look of something unresolved twists across her face. A flicker of disappointment, and exhaust,"},
+      {text: "And then she takes her last breath, alone, the pot of stew untouched in the next room."},
+      {text: "."},
+      {text: ". ."},
+      {text: ". . ."},
+      {text: "I wait for what I hope is a respectful interval of silence, then quietly finish the repair and go back into the kitchen to allow her a few more minutes.", sprite:""},
+      {text: "I can hear crying, then low talking, then what sounds like a song, once sung to a little girl maybe, now sung one final time."},
+      {text: "Yummy. The stew smells really good. I'm trying to figure out whether it will cause a paradox if I have a bowl when the young woman comes into the kitchen."},
+
+      // -------- APARTMENT — PART 4 -----------------------------------------
+      {speaker: "woman", sprite: "/mari/mari_smile.png",
+        dimmed: false,
+        text: "\"Thanks for that,\" she says.",
+        choices: [{label: "\"Yeah, take all the time you want. Well, not all the time.\""},]
+      },
+      {speaker: "woman", 
+        text: "\"I suppose I can't stay here.\"",
+        choices: [{label: "(Shake your head)"},]
+      },
+      {speaker: "narration", text:"",
+        choices: [{label: "\"If you bend too much and for too long, the porthole becomes an actual hole, and you might end up over there.\""}],
+      },
+      {speaker: "woman",
+        text: "\"Maybe that's what I want.\"",
+        choices: [
+          {label: "\"Trust me. It’s not. That’s not home.\""},
+          {label: "..."},
+        ]
+      },
+      {speaker: "narration", text:"",
+        choices: [{label: "\"I know it seems like home, everything looks the same, but it’s not. You weren’t there. It will never be the case that you were.\""}],
+      },
+      {speaker: "woman", dimmed: true, sprite: "/mari/mari_neutral.png",
+        text: "...",
+      },
       
-
-
       // BRANCH 1: ENDING DIALOGUE -> Cuts to choices array
-      {speaker: "woman", text: "WHO ARE YOU?", sprite: "/mari/mari_neutral.png",},
     ],
     // After an in-scene choice's lines play out, the scene advances via this.
     next: "ending_collapse",
@@ -149,15 +180,15 @@ export const scenes: Record<string, Scene> = {
       // IN-SCENE choice: `lines` play here in the apartment, then `next` above
       // fires. (Demo lines — replace with your own.)
       {
-        label: "…",
-        lines: [
-          { speaker: "narration", text: "You say nothing. The room holds its breath with her.", sprite: "/mari/mari_neutral.png" },
-          { speaker: "woman", text: "...Most people would have left by now.", sprite: "/mari/mari_off.png" },
-        ],
+        label: "(Leave the Apartment)",
         next: "ending_collapse",
+        // lines: [
+        //   { speaker: "narration", text: "You say nothing. The room holds its breath with her.", sprite: "/mari/mari_neutral.png" },
+        //   { speaker: "woman", text: "...Most people would have left by now.", sprite: "/mari/mari_off.png" },
+        // ],
       },
       // CLASSIC choice: jumps straight to another node.
-      { label: "\"She can't see you, can she?\"", next: "ending_collapse", set: { broachedGrief: true } },
+      // { label: "\"She can't see you, can she?\"", next: "ending_collapse", set: { broachedGrief: true } },
     ],
   },
 
