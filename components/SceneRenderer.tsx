@@ -62,7 +62,7 @@ export function SceneRenderer({
        the typewriter (skip() is a no-op once the line is fully shown). */
     <div
       onClick={() => dialogueRef.current?.skip()}
-      className={`text-md absolute inset-x-0 bottom-0 p-6 bg-black/60 backdrop-blur text-neutral-100 select-none ${
+      className={`text-lg absolute inset-x-0 bottom-0 p-6 bg-black/60 backdrop-blur text-neutral-100 select-none ${
         typingDone ? "" : "cursor-pointer"
       }`}
     >

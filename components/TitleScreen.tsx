@@ -28,7 +28,8 @@ export function TitleScreen({ onPlay }: { onPlay: () => void }) {
       <nav className="flex flex-col gap-3 w-56">
         <button
           onClick={newGame}
-          className="px-4 py-2 rounded border border-neutral-700 hover:bg-neutral-800 transition"
+          className="px-4 py-2 rounded border border-neutral-700 hover:bg-neutral-800 transition
+          cursor-pointer"
         >
           New game
         </button>
@@ -36,7 +37,8 @@ export function TitleScreen({ onPlay }: { onPlay: () => void }) {
         {saveExists && (
           <button
             onClick={onPlay} // state was already restored by GameProvider on mount
-            className="px-4 py-2 rounded border border-neutral-700 hover:bg-neutral-800 transition"
+            className="px-4 py-2 rounded border border-neutral-700 hover:bg-neutral-800 transition
+            cursor-pointer"
           >
             Continue
           </button>

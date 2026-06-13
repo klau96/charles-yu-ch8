@@ -64,7 +64,7 @@ export const scenes: Record<string, Scene> = {
         ]
       },
       {speaker: "narration", dimmed: true, text:"I nod. We both watch the old woman lying there, coming to terms with whatever she's coming to terms with."},
-      {speaker: "narration", text:"TAMMY discreetly beeps, reminding me of the job I'm here to do, which is fix the rift in our fabric of space-time."},
+      {speaker: "narration", text:"TAMMY discreetly beeps, reminding me of the job I'm here to do; Fix the rift in our fabric of space-time."},
 
 
 
