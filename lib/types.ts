@@ -36,6 +36,15 @@ export interface Line {
   // Optional screen effect(s) for this line — a single token or a list, e.g.
   // fx: "flash", fx: "grayscale", fx: ["shake", "threshold"], fx: "clear".
   fx?: EffectToken | EffectToken[];
+  // Optional one-shot sound effect(s) — the audio sibling of a one-shot `fx`.
+  // Fires when the line shows and replays if the line is revisited. Names
+  // resolve through the SFX registry in lib/audioConfig.
+  sfx?: string | string[];
+  // Optional music control, carried forward across the script like a persistent
+  // `fx` (and reset when the scene changes). "name" starts/replaces the track;
+  // "-name" stops it if that track is the one playing. Names resolve through the
+  // MUSIC registry in lib/audioConfig.
+  music?: string;
   // Optional line-level jump. Advancing past this line traverses to that node
   // (via GOTO) instead of stepping to the next line — so a script, or a choice's
   // spliced `lines`, can flow straight into another node. It wins over the
@@ -90,6 +99,10 @@ export interface Hotspot {
 export interface Scene {
   type: SceneType;
   background?: string;
+  // Optional starting music for the scene (by MUSIC-registry name), like
+  // `background`. A line's `music` overrides it mid-scene; leaving it unset
+  // means the scene starts silent unless a line turns music on.
+  music?: string;
   character?: { sprite: string; name?: string };
   // Per-speaker nameplate labels, for scenes where more than one non-narration
   // voice speaks (e.g. the woman AND her grandmother). The dialogue box shows

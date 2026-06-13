@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { useGame } from "@/game/GameProvider";
 import { scenes } from "@/game/scenes";
 import { filterCss, oneShotsOf, resolvePersistent } from "@/lib/effects";
+import { sfxOf, resolveMusic, sfxClip, musicClip } from "@/lib/audio";
+import { playSfx, playMusic, stopMusic } from "@/lib/sound";
 import { SceneRenderer } from "./SceneRenderer";
 import { EndingScreen } from "./EndingScreen";
 
@@ -132,6 +134,38 @@ export function Stage() {
     const anim = redRef.current?.animate(RED_BLINK_KEYFRAMES, RED_BLINK_OPTIONS);
     return () => anim?.cancel();
   }, [redBlinking]);
+
+  // One-shot sound effects on the active line — the audio sibling of flash/shake.
+  // Keyed on lineKey (+ the sfx names) so they re-fire each time the line shows.
+  const sfx = sfxOf(activeLine);
+  const sfxKey = sfx.join("|");
+  useEffect(() => {
+    for (const name of sfx) {
+      const clip = sfxClip(name);
+      if (clip) playSfx(clip.src, clip.volume ?? 1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lineKey, sfxKey]);
+
+  // Persistent music: the single track resolved for (scene, line). Crossfades in
+  // on change and stops when it resolves to nothing — a scene change that drops
+  // the track, or an explicit "-name". Re-declaring the same track (same string)
+  // doesn't re-run this, so it plays through unchanged.
+  const music = resolveMusic(node.music, script, lineIndex);
+  useEffect(() => {
+    if (!music) {
+      stopMusic();
+      return;
+    }
+    const clip = musicClip(music);
+    if (clip) playMusic(clip.src, { volume: clip.volume ?? 1, loop: clip.loop ?? true });
+    else stopMusic();
+  }, [music]);
+
+  // Stop music when the stage unmounts (e.g. back to the title screen, which
+  // lives outside Stage). Separate from the effect above so it only fires on
+  // teardown, not on every track change.
+  useEffect(() => () => stopMusic(), []);
 
   // Choices to offer at the current line: the line's own inline `choices`, or
   // (legacy) a choice node's `choices` when we reach the LAST line of the base

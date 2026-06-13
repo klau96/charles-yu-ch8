@@ -12,7 +12,8 @@ import {
 import { gameReducer, initialState } from "./gameReducer";
 import { loadGame, saveGame } from "./save";
 import { collectSprites, collectBackgrounds, preloadImages } from "./assets";
-import { releaseAudio } from "@/lib/sound";
+import { releaseAudio, stopMusic, preloadAudio } from "@/lib/sound";
+import { SFX, MUSIC } from "@/lib/audioConfig";
 import type { GameState, Action } from "@/lib/types";
 
 interface GameContextValue {
@@ -49,9 +50,17 @@ export function GameProvider({ children }: { children: ReactNode }) {
   // switch to per-scene lookahead if the asset count ever grows large.
   useEffect(() => {
     preloadImages([...collectSprites(), ...collectBackgrounds()]);
-    // Release the audio keep-alive when the game tears down, so the device isn't
-    // held open after we're gone.
-    return () => releaseAudio();
+    // Warm the sample cache too, so the first sfx/music plays without a load gap.
+    preloadAudio([
+      ...Object.values(SFX).map((c) => c.src),
+      ...Object.values(MUSIC).map((c) => c.src),
+    ]);
+    // Stop music and release the audio keep-alive when the game tears down, so
+    // the device isn't held open after we're gone.
+    return () => {
+      stopMusic();
+      releaseAudio();
+    };
   }, []);
 
   // Autosave on every state change — but NOT before hydration. Without this

@@ -9,6 +9,7 @@ export const scenes: Record<string, Scene> = {
   chinatown: {
     type: "narration",
     background: "oakland-chinatown.jpeg",
+    music: "chinatown",
     script: [
       { speaker: "narration", text: "Client call. I'm in Oakland, in Chinatown, sometime in the third quarter of the twentieth century.", fx: "flash", },
       { text: "People are bustling, cars are driving past, the smell of a chinese uncle's cigarette smoke lingers. He sits on a red and metal chair the size of a small cardboard box.", },
@@ -28,7 +29,10 @@ export const scenes: Record<string, Scene> = {
       // No `sprite` here — falls back to the scene's character.sprite (behindshadow).
       
       // -------- APARTMENT — PART 1 -----------------------------------------
-      { speaker: "narration", text: "A woman a little younger than I am, maybe twenty-five, twenty six. She's kneeling over an older woman who lies still, in an awkward position, her limbs slumped over the couch." },
+      { speaker: "narration", sfx: "door",
+        text: "I open the door and welcome myself in." },
+      { speaker: "narration",
+        text: "A woman a little younger than I am, maybe twenty-five, twenty six. She's kneeling over an older woman who lies still, in an awkward position, her limbs slumped over the couch." },
       { text: "The older woman looks up at the ceiling, looking through it, filled with a clear-eyed awareness of what's happening." },
       // This line swaps the sprite as it's shown.
       { text: "The younger woman does not notice your presence. Her face is covered in tears that have long been dried. Her eyes stained and red." },
