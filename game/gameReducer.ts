@@ -37,6 +37,11 @@ export function gameReducer(state: GameState, action: Action): GameState {
     case "SET_FLAGS":
       return { ...state, flags: { ...state.flags, ...action.flags } };
 
+    // Direct jump to a node (an EndingScreen that "continues" into the graph).
+    // Records history like any other edge so the flow stays continuous.
+    case "GOTO":
+      return { ...state, current: action.node, history: [...state.history, state.current] };
+
     // In-story time loop: reset to the start, but carry the loop counter forward.
     case "RESTART_LOOP":
       return { ...initialState, loop: state.loop + 1 };

@@ -14,6 +14,7 @@ interface SceneRendererProps {
   choices?: Choice[]; // choices to offer at the current line (inline or node-level), if any
   onAdvanceLine: () => void; // step to the next line within this node
   onChoose: (choice: Choice) => void; // pick a choice (in-scene continuation or jump — Stage decides)
+  onEndingComplete?: () => void; // ending node fully typed — Stage raises the EndingScreen
 }
 
 // SKELETON dispatcher. Walks the script via DialogueText (letter-by-letter), and
@@ -28,11 +29,15 @@ export function SceneRenderer({
   choices,
   onAdvanceLine,
   onChoose,
+  onEndingComplete,
 }: SceneRendererProps) {
   const { state, dispatch } = useGame();
   const node = scenes[state.current];
   const isNarration = speaker === "narration";
   const hasChoices = !!choices?.length;
+  // Nameplate label for the active speaker: a per-speaker name wins, otherwise
+  // the scene's single character name. Narration is unattributed (see below).
+  const speakerName = node.names?.[speaker] ?? node.character?.name;
 
   // Handle to the active DialogueText, so a click anywhere on the panel can skip
   // its typewriter animation.
@@ -67,9 +72,9 @@ export function SceneRenderer({
       }`}
     >
       {/* SPEAKER NAMEPLATE — only for spoken lines; narration is unattributed. */}
-      {node.character?.name && !isNarration && (
+      {speakerName && !isNarration && (
         <div className="mb-1 text-sm font-medium tracking-wide text-emerald-300">
-          {node.character.name}
+          {speakerName}
         </div>
       )}
 
@@ -112,9 +117,11 @@ export function SceneRenderer({
             </button>
           ))}
 
-        {/* No choices here, more lines to read — walk to the next script line
-            (this also walks lines spliced in by an in-scene choice). */}
-        {typingDone && !hasChoices && !atLastLine && (
+        {/* No choices — a single "continue" that walks the script: to the next
+            line, across a line-level `next`, or off the end via the node's own
+            edge. Stage's onAdvanceLine picks which. Endings show their own
+            control at the last line, so suppress continue there. */}
+        {typingDone && !hasChoices && !(atLastLine && node.type === "ending") && (
           <button
             onClick={onAdvanceLine}
             className="self-end text-sm opacity-70 hover:opacity-100 cursor-pointer"
@@ -123,19 +130,20 @@ export function SceneRenderer({
           </button>
         )}
 
-        {/* No choices, FINAL line, not an ending — advance via the node's own
-            next/branch. */}
-        {typingDone && !hasChoices && atLastLine && node.type !== "ending" && (
+        {/* ENDING node WITH an `ending` config — raise the EndingScreen only on
+            an explicit click, not automatically when the last line finishes. */}
+        {typingDone && atLastLine && node.type === "ending" && node.ending && (
           <button
-            onClick={() => dispatch({ type: "ADVANCE" })}
+            onClick={() => onEndingComplete?.()}
             className="self-end text-sm opacity-70 hover:opacity-100 cursor-pointer"
           >
             continue ▸
           </button>
         )}
 
-        {/* ENDING node, fully typed — loop back, or end the game. */}
-        {typingDone && atLastLine && node.type === "ending" && (
+        {/* ENDING node WITHOUT an `ending` config — legacy inline control:
+            loop back, or end the game. Endings with a config use EndingScreen. */}
+        {typingDone && atLastLine && node.type === "ending" && !node.ending && (
           <button
             onClick={() => dispatch({ type: state.loop === 0 ? "RESTART_LOOP" : "RESTART_GAME" })}
             className="self-end text-sm opacity-70 hover:opacity-100 cursor-pointer"

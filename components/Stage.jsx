@@ -5,6 +5,7 @@ import { useGame } from "@/game/GameProvider";
 import { scenes } from "@/game/scenes";
 import { filterCss, oneShotsOf, resolvePersistent } from "@/lib/effects";
 import { SceneRenderer } from "./SceneRenderer";
+import { EndingScreen } from "./EndingScreen";
 
 // Earthquake jitter, played imperatively (Web Animations API) so it replays per
 // shake-line without remounting the frame.
@@ -48,11 +49,15 @@ export function Stage() {
   // render (React's recommended pattern) instead of in an effect.
   const [lineIndex, setLineIndex] = useState(0);
   const [script, setScript] = useState(node.script ?? []);
+  // Whether the ending card is up. Flipped on once an ending node's dialogue has
+  // fully played (SceneRenderer reports it), reset whenever we enter a new node.
+  const [showEnding, setShowEnding] = useState(false);
   const [shownNode, setShownNode] = useState(state.current);
   if (shownNode !== state.current) {
     setShownNode(state.current);
     setLineIndex(0);
     setScript(node.script ?? []);
+    setShowEnding(false);
   }
 
   const activeLine = script[lineIndex];
@@ -63,6 +68,7 @@ export function Stage() {
   // `dimmed` overrides the carried value — but changing the sprite first resets
   // dim to false, so a new sprite shows full unless that same line re-dims it.
   let sprite = node.character?.sprite;
+  let background = node.background;
   let dimmed = false;
   let speaker = "narration";
   for (let i = 0; i <= lineIndex && i < script.length; i++) {
@@ -74,12 +80,27 @@ export function Stage() {
       sprite = line.sprite;
       dimmed = false;
     }
+    // Same `!== undefined` rule for the background: an explicit "" clears it,
+    // an omitted background carries the current one forward.
+    if (line?.background !== undefined) background = line.background;
     if (line?.dimmed !== undefined) dimmed = line.dimmed;
     if (line?.speaker) speaker = line.speaker;
   }
 
   const atLastLine = lineIndex >= script.length - 1;
-  const advanceLine = () => setLineIndex((i) => Math.min(i + 1, script.length - 1));
+  // Walk forward from the active line. A line-level `next` traverses to another
+  // node from anywhere in the script (including the last line of a choice's
+  // spliced `lines`) and wins over the node's own edge; at the end of the script
+  // with no line jump, we follow the node's `next`/`branch`; otherwise step on.
+  const advanceLine = () => {
+    if (activeLine?.next) {
+      dispatch({ type: "GOTO", node: activeLine.next });
+    } else if (atLastLine) {
+      dispatch({ type: "ADVANCE" });
+    } else {
+      setLineIndex((i) => i + 1);
+    }
+  };
 
   // Screen effects resolved from `fx` tokens (see lib/effects). Persistent
   // filters (grayscale/threshold) carry forward through the script; one-shots
@@ -157,10 +178,10 @@ export function Stage() {
           className="absolute inset-0 z-0 transition-[filter] duration-700"
           style={{ filter }}
         >
-          {node.background && (
+          {background && (
             <div
               className="absolute inset-0 bg-cover bg-center transition-opacity duration-500"
-              style={{ backgroundImage: `url(${node.background})` }}
+              style={{ backgroundImage: `url(${background})` }}
             />
           )}
 
@@ -183,6 +204,7 @@ export function Stage() {
             choices={choices}
             onAdvanceLine={advanceLine}
             onChoose={choose}
+            onEndingComplete={() => setShowEnding(true)}
           />
         </div>
 
@@ -214,6 +236,10 @@ export function Stage() {
           </defs>
         </svg>
       </div>
+
+      {/* Full-screen ending card, shown once an ending node with an `ending`
+          config has finished its dialogue. Fixed, so it covers the letterbox. */}
+      {showEnding && node.ending && <EndingScreen config={node.ending} />}
     </main>
   );
 }

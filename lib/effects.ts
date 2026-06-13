@@ -36,7 +36,10 @@ export function oneShotsOf(line: Line | undefined): string[] {
 // when off so it transitions smoothly; threshold (an SVG filter) is appended
 // only when active (it snaps — a hard 1-bit cut shouldn't ease).
 export function filterCss(active: Set<string>): string {
-  const parts = [`grayscale(${active.has("grayscale") ? 1 : 0})`];
+  // grayscale also dims to 50% brightness. Both stay in the string at their
+  // "off" values (0 / 1) when inactive so they ease via transition-[filter].
+  const gray = active.has("grayscale");
+  const parts = [`grayscale(${gray ? 1 : 0})`, `brightness(${gray ? 0.5 : 1})`];
   if (active.has("threshold")) parts.push("url(#fx-threshold)");
   return parts.join(" ");
 }

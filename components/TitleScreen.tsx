@@ -21,7 +21,7 @@ export function TitleScreen({ onPlay }: { onPlay: () => void }) {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center gap-10 bg-neutral-950 text-neutral-100">
       <header className="text-center space-y-2">
-        <h1 className="font-serif italic text-4xl tracking-tight">Chapter 8 — How to Live Safely in a Science Fictional Universe</h1>
+        <h1 className="font-serif italic text-4xl tracking-tight">How to Live Safely in a Science Fictional Universe — Chapter 8</h1>
         <p className="text-sm text-neutral-400">Kiaran Lau</p>
       </header>
 
