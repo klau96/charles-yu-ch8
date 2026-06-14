@@ -215,7 +215,7 @@ export const scenes: Record<string, Scene> = {
       { fx: "shake", sfx: ["boom", "sci_fi_alarm"],
         text: "The TM-31 sounds the alarm. Code Red. TAMMY begins panicking, so I place her back into the charging dock.",},
       { text: "I have to stay calm. I've read the instructions manual enough times to know protocol.",},
-      { text: "According to the instructions manual, it's a 0.9 alpha-gradient rift collapse. Imminent situation.",},
+      { text: "According to the manual, it's a 0.9 alpha-gradient rift collapse. Imminent situation.",},
       { text: "I'm safe in this box, as long as I switch lines and follow the temporal tangent back to U-31.",},
       { fx: "shake", sfx: ["sci_fi_alarm", "boom"],
         text: "TAMMY's beeping has syncronized with the alarm. She wants me to switch lines, immediately.",},
