@@ -194,38 +194,47 @@ export const scenes: Record<string, Scene> = {
     ],
   },
 
-  // BRANCH 2: ENDING COLLAPSE 
+  // BRANCH 2: TM-31 RIFT, CHOICE 
   return_to_tm31: {
     type: "choice",
     background: "tm-31.jpeg",
     music: "tm31",
     effect: "collapse",
     script: [
-      { speaker: "narration", text: "Day in the life of a time traveling technician living in the TM-31.",},
+      { speaker: "narration", 
+        sfx: "hydraulic_door",
+        text: "Day in the life of a time traveling technician living in the TM-31.",},
       { text: "A typical customer gets into a machine that can literally take her whenever she’d like to go. Do you want to know what the first stop usually is? Take a guess.",},
       { text: "Don’t guess. You already know: the unhappiest day of her life—",},
-      { fx: "shake", text: "—The world shakes, and a loud tear ripples across the temporal reality.",},
+      
+      { fx: "shake", sfx: "boom",
+        text: "—The world shakes, and a loud tear ripples across the temporal reality.",},
       { text: ". . .",},
       { text: "That does not sound regular.",},
-      { fx: "redblink", text: "The TM-31 sounds the alarm. Code Red. TAMMY begins panicking, so I place her back into the charging dock.",},
-      { fx: "shake", text: "I have to stay calm. I've read the instructions manual enough times to know protocol.",},
+      
+      { fx: "shake", sfx: ["boom", "sci_fi_alarm"],
+        text: "The TM-31 sounds the alarm. Code Red. TAMMY begins panicking, so I place her back into the charging dock.",},
+      { text: "I have to stay calm. I've read the instructions manual enough times to know protocol.",},
       { text: "According to the instructions manual, it's a 0.9 alpha-gradient rift collapse. Imminent situation.",},
       { text: "I'm safe in this box, as long as I switch lines and follow the temporal tangent back to U-31.",},
-      { fx: "shake",text: "TAMMY's beeping has syncronized with the alarm. She wants me to switch lines, immediately.",},
+      { fx: "shake", sfx: ["sci_fi_alarm", "boom"],
+        text: "TAMMY's beeping has syncronized with the alarm. She wants me to switch lines, immediately.",},
       { text: "But I can't help but wonder. What the hell happened? Is that woman going to be okay?",},
       { text: "",
         choices: [
           {label: "(Leave the TM-31)"},
           {label: "(Set the line back to U-31)", lines: [
-            { text: "I can't just leave.", fx: "shake",
+            { text: "I can't just leave.", 
+              fx: "shake", sfx: ["boom", "sci_fi_alarm"],
               choices: [
                 {label: "(Exit the TM-31)"},
                 {label: "(Set the line back to U-31)", lines: [
-                  { text: "I can't just leave.", fx: "shake",
+                  { text: "I can't just leave.", 
                     choices: [
                       {label: "(Exit the TM-31)"},
                       {label: "(Set the line back to U-31)", lines: [
-                        { text: "I can't just leave.", fx: "shake",
+                        { text: "I can't just leave.", 
+                          fx: "shake", sfx: ["boom", "sci_fi_alarm"],
                           choices: [
                             {label: "(Exit the TM-31)"},
                             // Jump to the protocol ending. NOTE: a choice with
@@ -246,6 +255,7 @@ export const scenes: Record<string, Scene> = {
         ]
       },
 
+      { text: "TAMMY disapproves and burrows herself further into the charging dock."},
       { text: "Alright. TAMMY, take care of the box. I'll be right back.", 
         next: "return_to_apartment1"},
     ],
@@ -253,18 +263,20 @@ export const scenes: Record<string, Scene> = {
 
   return_to_apartment1: {
     type: "ending",
-    background: "living-room.jpeg",
+    background: "oakland-chinatown.jpeg",
     music: "radiohead_nude",
     names: { woman: "The Woman", grandmother: "Grandmother" },
+    
     script: [
       { speaker: "narration",
         fx: "grayscale",
+        sfx: "hydraulic_door",
         background: "oakland-chinatown.jpeg",
         text: "The atmosphere has changed to be thin and rusty. Cars, inhabitants, and even the air has stopped moving.",
       },
-      { text: "In fact, all movement in this temporal dimension has ceased. The timeline has lost its clutch on entropy, ceasing the energy of nearby occupants. But they don't know this yet. By the looks of it, they'll never know.",},
-      { fx: "shake",
-        text: "It's a situation that doesn't happen often. I can sense the amount of time in this moment decreasing rapidly. I rush up the stairs to the apartment.",},
+      { text: "In fact, all movement in this temporal dimension has ceased. It's as if the timeline has detached itself from entropy, stopping the flow of energy for everything. The inhabitants don't know this yet. At least they'll have never felt it coming.",},
+      { fx: "shake", sfx: "boom",
+        text: "It's a situation that doesn't happen often. I can sense the amount of time in this moment rapidly decreasing. I rush up the stairs to the apartment.",},
 
       { speaker: "narration", 
         background: "living-room.jpeg",
@@ -274,14 +286,48 @@ export const scenes: Record<string, Scene> = {
       { speaker: "narration", 
         sprite: "/mari/mari_off.png",
         dimmed: true,
-        text: "To my relief, she is still okay, kneeling beside her grandmother who had passed recently and long ago.",},
+        text: "To my relief, she is still okay, kneeling beside her grandmother who had passed just now and forever ago.",},
       { speaker: "narration", text: "Or so I thought. This shouldn't be possible. ",},
-      { speaker: "narration", text: "The grandmother's frail and soft voice whispers to the woman. ",},
-      { speaker: "grandmother", text: "我那甜甜的小花朵，你来看奶奶啦。(My sweet little flower, you've come to see Grandma.)",},
+      { speaker: "narration", text: "The grandmother looks on at her granddaughter. With her frail and soft voice, she whispers to the young woman. ",},
+
+      { speaker: "grandmother", text: "我那甜甜的小花朵，你来看奶奶啦。(My sweet little flower, you've come to see grandma.)",},
       { speaker: "narration",
         dimmed: false,
-        text: "A mysterious smile sticks itself to the face of the woman. She knows what she has done, is doing, and will always do.",
+        text: "The woman does not speak to me. Her only attention is on her grandmother, who is very much alive and well. As I look on, I realize that we stand an infinite distance apart.",
       },
+      { text: "This really shouldn't be possible. What changed? What converged?"},
+      { text: "A mysterious smile sticks itself to the face of the woman. I can't see it clearly, but the look on her face—"},
+
+      { text: "—She knows what she has done, is doing, and will always do.",},
+      { text: ". . .",},
+      { text: "I need to get out of here.",},
+      { text: "", 
+        dimmed: true,
+        choices: [
+        { label: "(Run back to the TM-31)",
+          lines: [
+            { sprite: "",
+              text: "I try opening the door, which now resists my attempt to push it. With a rift collapse comes temporal viscosity."},
+            { text: "With my arms and legs catching the waves of dimensionally-weighted blankets, my breathing becomes heavy.",
+              sfx: "door",
+              background: "oakland-chinatown.jpeg",
+            },
+            { text: "I scramble back down the stairs, back to the streets of Oakland Chinatown, back to the TM-31—",
+              fx: ["shake"],
+              sfx: ["boom"],
+              background: "oakland-chinatown.jpeg",
+            },
+            
+            { text: "—and back to safety.",
+              fx: ["redblink", "-grayscale"],
+              sfx: ["hydraulic_door", "sci_fi_alarm"],
+              background: "tm-31.jpeg",
+            }
+          ]
+          },
+        ]
+      },
+      
     ],
     // EndingScreen for the "Leave the TM-31" path. `next` makes the card's
     // button CONTINUE the loop into chinatown2 instead of restarting — see
@@ -289,7 +335,7 @@ export const scenes: Record<string, Scene> = {
     ending: {
       title: "Ending 1: TIMELINE DIVERSION",
       description:
-        "The woman, against the advice of the time travel technician, against her acceptance of death, cannot shake her past. Her grievances scream louder than her existence, causing the rift to fully collapse.",
+        "The woman, against the advice of the time travel technician, against her acceptance of death, fails to leave behind her past regrets. An impossible moment, and a wish fulfilled, at the cost of the world.",
       textColor: "#C41818",
       next: "chinatown2",
       buttonLabel: "Continue ▸",

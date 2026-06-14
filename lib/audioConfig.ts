@@ -21,6 +21,11 @@ export interface MusicClip {
 // One-shot sound effects, fired from a line's `sfx`.
 export const SFX: Record<string, SfxClip> = {
   door:  { src: "/sfx/door.opus", volume: 0.6 },
+  metal_door: { src: "/sfx/metal-door.opus", volume: 0.6 },
+  hydraulic_door: { src: "/sfx/hydraulic-door.opus", volume: 0.6 },
+  sci_fi_alarm: { src: "/sfx/sci-fi-alarm.opus", volume: 0.6 },
+  boom: { src: "/sfx/boom.opus", volume: 0.6 },
+
   // glass: { src: "/sfx/glass.mp3" },
 };
 

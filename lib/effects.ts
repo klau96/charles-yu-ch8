@@ -39,7 +39,7 @@ export function filterCss(active: Set<string>): string {
   // grayscale also dims to 50% brightness. Both stay in the string at their
   // "off" values (0 / 1) when inactive so they ease via transition-[filter].
   const gray = active.has("grayscale");
-  const parts = [`grayscale(${gray ? 1 : 0})`, `brightness(${gray ? 0.5 : 1})`];
+  const parts = [`grayscale(${gray ? 1 : 0})`, `brightness(${gray ? 0.8 : 1})`];
   if (active.has("threshold")) parts.push("url(#fx-threshold)");
   return parts.join(" ");
 }

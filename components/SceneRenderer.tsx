@@ -50,7 +50,7 @@ export function SceneRenderer({
   const quoted = speaker !== "narration" && speaker !== "woman";
   const display = line ? (quoted ? `“${line.text}”` : line.text) : "";
   const textClass = isNarration
-    ? "text-lg font-serif italic text-neutral-100 leading-relaxed"
+    ? "text-lg font-sans text-neutral-100 leading-relaxed"
     : "font-sans";
 
   // Gate the controls until the line has finished typing. Reset per line during
@@ -131,8 +131,11 @@ export function SceneRenderer({
         )}
 
         {/* ENDING node WITH an `ending` config — raise the EndingScreen only on
-            an explicit click, not automatically when the last line finishes. */}
-        {typingDone && atLastLine && node.type === "ending" && node.ending && (
+            an explicit click, not automatically when the last line finishes.
+            `!hasChoices` so a last line that still offers choices shows those
+            first; the ending control appears only once the choice's lines have
+            played out onto a choices-less last line. */}
+        {typingDone && !hasChoices && atLastLine && node.type === "ending" && node.ending && (
           <button
             onClick={() => onEndingComplete?.()}
             className="self-end text-sm opacity-70 hover:opacity-100 cursor-pointer"
@@ -142,8 +145,9 @@ export function SceneRenderer({
         )}
 
         {/* ENDING node WITHOUT an `ending` config — legacy inline control:
-            loop back, or end the game. Endings with a config use EndingScreen. */}
-        {typingDone && atLastLine && node.type === "ending" && !node.ending && (
+            loop back, or end the game. Endings with a config use EndingScreen.
+            Also gated on `!hasChoices` so it doesn't show alongside choices. */}
+        {typingDone && !hasChoices && atLastLine && node.type === "ending" && !node.ending && (
           <button
             onClick={() => dispatch({ type: state.loop === 0 ? "RESTART_LOOP" : "RESTART_GAME" })}
             className="self-end text-sm opacity-70 hover:opacity-100 cursor-pointer"
