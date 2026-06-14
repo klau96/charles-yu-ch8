@@ -212,7 +212,7 @@ export const scenes: Record<string, Scene> = {
       { text: ". . .",},
       { text: "That does not sound regular.",},
       
-      { fx: "shake", sfx: ["boom", "sci_fi_alarm"],
+      { fx: ["shake", "redblink"], sfx: ["boom", "sci_fi_alarm"],
         text: "The TM-31 sounds the alarm. Code Red. TAMMY begins panicking, so I place her back into the charging dock.",},
       { text: "I have to stay calm. I've read the instructions manual enough times to know protocol.",},
       { text: "According to the manual, it's a 0.9 alpha-gradient rift collapse. Imminent situation.",},
