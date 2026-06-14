@@ -217,15 +217,15 @@ export const scenes: Record<string, Scene> = {
         choices: [
           {label: "(Leave the TM-31)"},
           {label: "(Set the line back to U-31)", lines: [
-            { text: "I can't just leave yet.", fx: "shake",
+            { text: "I can't just leave.", fx: "shake",
               choices: [
                 {label: "(Exit the TM-31)"},
                 {label: "(Set the line back to U-31)", lines: [
-                  { text: "I can't just leave yet.", fx: "shake",
+                  { text: "I can't just leave.", fx: "shake",
                     choices: [
                       {label: "(Exit the TM-31)"},
                       {label: "(Set the line back to U-31)", lines: [
-                        { text: "I can't just leave yet.", fx: "shake",
+                        { text: "I can't just leave.", fx: "shake",
                           choices: [
                             {label: "(Exit the TM-31)"},
                             // Jump to the protocol ending. NOTE: a choice with
@@ -254,6 +254,7 @@ export const scenes: Record<string, Scene> = {
   return_to_apartment1: {
     type: "ending",
     background: "living-room.jpeg",
+    music: "grayscale",
     names: { woman: "The Woman", grandmother: "Grandmother" },
     script: [
       { speaker: "narration",
