@@ -254,7 +254,7 @@ export const scenes: Record<string, Scene> = {
   return_to_apartment1: {
     type: "ending",
     background: "living-room.jpeg",
-    music: "grayscale",
+    music: "radiohead_nude",
     names: { woman: "The Woman", grandmother: "Grandmother" },
     script: [
       { speaker: "narration",
@@ -269,6 +269,7 @@ export const scenes: Record<string, Scene> = {
       { speaker: "narration", 
         background: "living-room.jpeg",
         fx: "grayscale",
+        sfx: "door",
         text: "I open the door and see the young woman again.",},
       { speaker: "narration", 
         sprite: "/mari/mari_off.png",
@@ -276,7 +277,7 @@ export const scenes: Record<string, Scene> = {
         text: "To my relief, she is still okay, kneeling beside her grandmother who had passed recently and long ago.",},
       { speaker: "narration", text: "Or so I thought. This shouldn't be possible. ",},
       { speaker: "narration", text: "The grandmother's frail and soft voice whispers to the woman. ",},
-      { speaker: "grandmother", text: "我那甜甜的小花朵，你来看奶奶啦。(My sweet little flower, you’ve come to see Grandma)",},
+      { speaker: "grandmother", text: "我那甜甜的小花朵，你来看奶奶啦。(My sweet little flower, you've come to see Grandma.)",},
       { speaker: "narration",
         dimmed: false,
         text: "A mysterious smile sticks itself to the face of the woman. She knows what she has done, is doing, and will always do.",

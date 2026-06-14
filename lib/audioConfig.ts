@@ -20,7 +20,7 @@ export interface MusicClip {
 
 // One-shot sound effects, fired from a line's `sfx`.
 export const SFX: Record<string, SfxClip> = {
-  door:  { src: "/sfx/door.opus", volume: 0.25 },
+  door:  { src: "/sfx/door.opus", volume: 0.6 },
   // glass: { src: "/sfx/glass.mp3" },
 };
 
@@ -28,7 +28,8 @@ export const SFX: Record<string, SfxClip> = {
 export const MUSIC: Record<string, MusicClip> = {
   chinatown: {src: "/music/chinatown.opus", volume: 0.4},
   tm31: {src: "/music/tm-31.opus", volume: 0.4},
-  grayscale: {src: "/music/grayscale-p4-bad-ending.opus", volume: 0.4},
+  p4_badending: {src: "/music/grayscale-p4-bad-ending.opus", volume: 0.4},
+  radiohead_nude: {src: "/music/radiohead-nude.opus", volume: 0.25},
   // rain:  { src: "/music/rain.mp3", volume: 0.4 },
   // alarm: { src: "/music/alarm.mp3", volume: 0.6 },
 };

@@ -43,7 +43,7 @@ const SECTIONS: Section[] = [
       <>
         <p className="font-serif text-md leading-tight text-neutral-100">Professor Zac Zimmer</p>
         <p className="font-serif italic text-[13px] leading-relaxed text-neutral-300">
-          Many thanks for the wonderful quarter and for passionately introducing us to humanitarian side of time travel, and giving us the awareness to know whether we're in a modern day time loop.
+          Many thanks for the wonderful quarter and for passionately introducing us to the humanitarian side of time travel. You've equipped me with a heightened awareness, shall I ever find myself falling into a modern day time-loop. 
         </p>
         <span className="my-3 block h-px w-full bg-white/20"></span>
         <p className="font-serif text-md leading-tight text-neutral-100">Nghiem Tran</p>
