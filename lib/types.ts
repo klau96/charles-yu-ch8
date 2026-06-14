@@ -16,7 +16,9 @@ export interface Line {
   // speaker (set it only when the speaker changes); the first line defaults to
   // "narration". Resolution happens in Stage, like the per-line sprite.
   speaker?: Speaker;
-  text: string;
+  // Optional. Defaults to "" — a line with no text renders no dialogue (its text
+  // area collapses to 0 height), which is handy for pure choice/prompt lines.
+  text?: string;
   // Optional per-line sprite. When set, the character art swaps to this as the
   // line is shown; when omitted, the line keeps the scene's character.sprite.
   sprite?: string;

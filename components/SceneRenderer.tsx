@@ -48,7 +48,12 @@ export function SceneRenderer({
   // The typewriter slices this whole string, so any quotes reveal naturally at
   // the start and end.
   const quoted = speaker !== "narration" && speaker !== "woman";
-  const display = line ? (quoted ? `“${line.text}”` : line.text) : "";
+  // `text` is optional and defaults to "". `hasText` decides whether the text
+  // area renders at all — an empty line collapses to 0 height so the choices can
+  // sit centered in the panel.
+  const text = line?.text ?? "";
+  const hasText = text !== "";
+  const display = hasText ? (quoted ? `“${text}”` : text) : "";
   const textClass = isNarration
     ? "text-lg font-sans text-neutral-100 leading-relaxed"
     : "font-sans";
@@ -62,13 +67,18 @@ export function SceneRenderer({
     setTypingDone(false);
   }
 
+  // A line with no text has nothing to type, so it counts as "complete" right
+  // away — its controls/choices appear immediately (DialogueText isn't rendered
+  // for an empty line, so it would never fire onDone).
+  const typingComplete = !hasText || typingDone;
+
   return (
     /* DIALOGUE PANEL — the bottom letterboxed bar. Clicking anywhere on it skips
        the typewriter (skip() is a no-op once the line is fully shown). */
     <div
       onClick={() => dialogueRef.current?.skip()}
       className={`absolute inset-x-0 bottom-0 p-6 bg-black/60 backdrop-blur text-neutral-100 select-none ${
-        typingDone ? "" : "cursor-pointer"
+        typingComplete ? "" : "cursor-pointer"
       }`}
     >
       {/* SPEAKER NAMEPLATE — only for spoken lines; narration is unattributed. */}
@@ -78,34 +88,37 @@ export function SceneRenderer({
         </div>
       )}
 
-      {/* DIALOGUE TEXT — the line, typed out character by character. An invisible
-          full-text "ghost" reserves the line's final height so the bottom-anchored
-          panel doesn't grow upward as it types (which made the cursor flicker at
-          the panel's moving top edge). The typed text overlays the ghost. */}
-      <div className="relative">
-        <p className={`${textClass} invisible`} aria-hidden="true">
-          {display}
-        </p>
-        <div className="absolute inset-0">
-          <DialogueText
-            ref={dialogueRef}
-            key={lineKey}
-            text={display}
-            className={textClass}
-            onDone={() => setTypingDone(true)}
-          />
+      {/* DIALOGUE TEXT — only when the line has text. An invisible full-text
+          "ghost" reserves the line's final height so the bottom-anchored panel
+          doesn't grow upward as it types. An empty line omits this whole block
+          (0 height), so the choices below centre in the panel's padding. */}
+      {hasText && (
+        <div className="relative">
+          <p className={`${textClass} invisible`} aria-hidden="true">
+            {display}
+          </p>
+          <div className="absolute inset-0">
+            <DialogueText
+              ref={dialogueRef}
+              key={lineKey}
+              text={display}
+              className={textClass}
+              onDone={() => setTypingDone(true)}
+            />
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* CONTROLS — hidden until the line finishes typing. */}
-      <div className="mt-4 flex flex-col gap-2">
+      {/* CONTROLS — hidden until the line finishes typing. `mt-4` only when
+          there's text above; with no text the choices centre in the padding. */}
+      <div className={`flex flex-col gap-2 ${hasText ? "mt-4" : ""}`}>
         {/* Still typing — hint that the panel can be clicked to skip. */}
-        {!typingDone && <span className="self-end text-xs opacity-40">click to skip</span>}
+        {!typingComplete && <span className="self-end text-xs opacity-40">click to skip</span>}
 
         {/* CHOICES — this line ends in a decision (inline on the line, or a
             choice node's options). Picking one may continue in-scene, set flags,
             or jump; Stage decides via onChoose. */}
-        {typingDone &&
+        {typingComplete &&
           hasChoices &&
           choices?.map((choice, i) => (
             <button
@@ -121,7 +134,7 @@ export function SceneRenderer({
             line, across a line-level `next`, or off the end via the node's own
             edge. Stage's onAdvanceLine picks which. Endings show their own
             control at the last line, so suppress continue there. */}
-        {typingDone && !hasChoices && !(atLastLine && node.type === "ending") && (
+        {typingComplete && !hasChoices && !(atLastLine && node.type === "ending") && (
           <button
             onClick={onAdvanceLine}
             className="self-end text-sm opacity-70 hover:opacity-100 cursor-pointer"
@@ -135,7 +148,7 @@ export function SceneRenderer({
             `!hasChoices` so a last line that still offers choices shows those
             first; the ending control appears only once the choice's lines have
             played out onto a choices-less last line. */}
-        {typingDone && !hasChoices && atLastLine && node.type === "ending" && node.ending && (
+        {typingComplete && !hasChoices && atLastLine && node.type === "ending" && node.ending && (
           <button
             onClick={() => onEndingComplete?.()}
             className="self-end text-sm opacity-70 hover:opacity-100 cursor-pointer"
@@ -147,7 +160,7 @@ export function SceneRenderer({
         {/* ENDING node WITHOUT an `ending` config — legacy inline control:
             loop back, or end the game. Endings with a config use EndingScreen.
             Also gated on `!hasChoices` so it doesn't show alongside choices. */}
-        {typingDone && !hasChoices && atLastLine && node.type === "ending" && !node.ending && (
+        {typingComplete && !hasChoices && atLastLine && node.type === "ending" && !node.ending && (
           <button
             onClick={() => dispatch({ type: state.loop === 0 ? "RESTART_LOOP" : "RESTART_GAME" })}
             className="self-end text-sm opacity-70 hover:opacity-100 cursor-pointer"
